@@ -1,0 +1,13 @@
+#Set the path to the khan-exercises
+EXERCISES_REPO=./khan-exercises/KhanLatest/khan-exercises
+
+if [ ! -d "${EXERCISES_REPO}" ]; then echo "EXERCISES_REPO variable is not set correctly, please do so"; exit; fi
+
+cd $EXERCISES_REPO
+git pull
+cd -
+
+zip -r khan-exercises.zip $EXERCISES_REPO
+mv khan-exercises.zip ./coursebuilder/modules/khanex/
+cd -
+
