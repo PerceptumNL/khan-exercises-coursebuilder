@@ -7,7 +7,13 @@ cd $EXERCISES_REPO
 git pull
 cd -
 
-zip -r khan-exercises.zip $EXERCISES_REPO
-mv khan-exercises.zip ./coursebuilder/modules/khanex/
-cd -
 
+mkdir -p tmp/khan-exercises
+cp -r $EXERCISES_REPO tmp/khan-exercises
+cp -r coursebuilder/mod-files/* tmp/khan-exercises
+cd tmp
+zip -r ../khan-exercises.zip *
+cd -
+#rm -rf tmp
+rm ./coursebuilder/modules/khanex/khan-exercises.zip
+mv khan-exercises.zip ./coursebuilder/modules/khanex/
