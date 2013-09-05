@@ -1,4 +1,4 @@
-khan-exercises/
+^khan-exercises/$
 coursebuilder/modules/khanex/khan-exercises.zip
 tmp
 *.sw?
