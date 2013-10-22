@@ -100,6 +100,18 @@ from models import custom_modules
 from models import models
 from models import transforms
 
+from api import jsonify
+import user_models
+import exercise_models
+
+def get_user_exercise(name):
+   user_data = user_models.UserData.current()
+   exercise = exercise_models.Exercise.get_by_name(name)
+   if user_data:
+       user_exercise = user_data.get_or_insert_exercise(exercise)
+   else:
+       user_exercise = None
+   return user_exercise
 
 ATTEMPT_COUNT = PerfCounter(
     'gcb-khanex-attempt-count',
@@ -208,6 +220,7 @@ class KhanExerciseTag(tags.BaseTag):
         """Embed just a <script> tag that will in turn create an <iframe>."""
         name = node.attrib.get('name')
         caption = name.replace('_', ' ')
+
         return cElementTree.XML(
             """
 <div style='width: 450px;'>
@@ -215,11 +228,12 @@ class KhanExerciseTag(tags.BaseTag):
   <br/>
   <script>
     // customize the style of the exercise iframe
-    var ity_ef_style = "width: 750px;";
+    var ity_ef_style = "width: 770px;";
+    var %s_data = %s;
   </script>
   <script src="%s" type="text/javascript"></script>
 </div>""" % (
-    cgi.escape(caption), 'khan-exercises/embed.js?static:%s' % name))
+    cgi.escape(caption), name, jsonify.jsonify(get_user_exercise(name)), 'khan-exercises/embed.js?static:%s' % name))
 
     def get_schema(self, unused_handler):
         """Make schema with a list of all exercises by inspecting a zip file."""

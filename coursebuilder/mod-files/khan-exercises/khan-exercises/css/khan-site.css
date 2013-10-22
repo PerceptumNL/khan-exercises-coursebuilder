@@ -2733,10 +2733,9 @@ body {
 
 article {
     padding: 0 19px;
-    background: #fff;
+    background: rgb(249, 249, 249);
     position: relative;
     margin: 0 1px;
-    border-top: 1px solid #C6D1AD;
 }
 
 /* Basic typography for the entire site */
@@ -2988,6 +2987,7 @@ header, footer {
 
 #end-of-page-spacer {
     clear: both;
+    display: none;
 }
 
 footer {
@@ -4705,6 +4705,7 @@ span.youTube:hover {
 #extras.single-exercise {
     margin: 6px 0 10px;
     padding-right: 10px;
+    display: none;
 }
 
 #answer_area_wrap {
@@ -10447,7 +10448,6 @@ a.big-button:active > div {
 
 .current-card {
     position: relative;
-    margin-bottom: 20px;
 }
 
 .current-card #answer_area_wrap {

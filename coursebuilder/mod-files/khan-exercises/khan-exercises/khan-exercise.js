@@ -86,7 +86,7 @@ function getURLParameters(paramName)
                 return arrParamValues[i];
              }
        }
-       return "No Parameters Found";
+       return false;
     }
 
 }
@@ -260,8 +260,10 @@ var Khan = (function() {
     testMode = typeof Exercises === "undefined",
 
     // The main server we're connecting to for saving data
-    server = typeof apiServer !== "undefined" ? apiServer :
-        testMode ? "http://127.0.0.1:8080" : "",
+    //server = typeof apiServer !== "undefined" ? apiServer :
+    //    testMode ? "http://127.0.0.1:8080" : "",
+
+    server = "",
 
     // The ID, filename, and name of the exercise -- these will only be set here in testMode
     //exerciseId = ((/([^\/.]+)(?:\.html)?$/.exec(window.location.pathname) || [])[1]) || "",
@@ -1485,6 +1487,11 @@ var Khan = (function() {
         // Add the problem into the page
         Khan.scratchpad.resize();
 
+		// resize the container
+		if (typeof Khan.onItyEfResize == 'function'){
+			Khan.onItyEfResize();
+		}
+
         // Enable the all answer input elements except the check answer button.
         $("#answercontent input").not("#check-answer-button")
             .removeAttr("disabled");
@@ -2307,12 +2314,14 @@ var Khan = (function() {
                 // Problem has been completed but pending data request being
                 // sent to server.
                 $(Khan).trigger("problemDone");
+                addAttempt(attempts == 0 && hintsUsed == 0);
             }
 
             // Save the problem results to the server
             var curTime = new Date().getTime();
             var data = buildAttemptData(pass, ++attempts, JSON.stringify(guess), curTime);
             debugLog("attempt " + JSON.stringify(data));
+            
             request("problems/" + problemNum + "/attempt", data, function() {
 
                 // TODO: Save locally if offline
@@ -2496,6 +2505,11 @@ var Khan = (function() {
 
                 // Grow the scratchpad to cover the new hint
                 Khan.scratchpad.resize();
+
+				// resize the container
+				if(typeof Khan.onItyEfResize == 'function') {
+					Khan.onItyEfResize();
+				}
 
                 // Disable the get hint button & add final_answer class
                 if (hints.length === 0) {
@@ -3015,7 +3029,11 @@ var Khan = (function() {
             type: "POST",
             data: data,
             dataType: "json",
-            xhrFields: xhrFields,
+            xhrFields: {
+              withCredentials: true
+            },
+
+            //xhrFields: xhrFields,
 
             // Backup the response locally, for later use
             success: function(data) {

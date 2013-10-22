@@ -7,6 +7,17 @@
 
 */
 
+function ity_load_globals(id, name){
+    if(document.getElementById){
+		// show frame
+		var frm = document.getElementById(id);
+        if (window[name + '_data']) {
+		    frm.contentWindow.userExerciseData = window[name + '_data'];
+        }
+		frm.contentWindow.Badges = window['Badges'];
+    }
+}
+
 function ity_ef_resize_height(id){
     if(document.getElementById){
 		// show frame
@@ -96,16 +107,27 @@ function ity_ef_resize_height(id){
 	 	window['ity_ef_style'] = undefined;
 	}
 
+    var name = parts[1].replace("static:", "");
+    var longestStreak = "";
+    var currentStreak = "";
+    console.log("NAME: " + name);
+    if (window[name + '_data']) {
+        console.log("Loading Data");
+        var userExercise = window[name + '_data'];
+        longestStreak = '&longestStreak=' + userExercise['longest_streak'];
+        currentStreak = '&currentStreak=' + userExercise['streak'];
+    }
+
 	// origin
 	var origin = encodeURIComponent(window.location.href);
 
 	// prepare iframe html
 	var uid = "ity-ef-exercise-" + ity_ef_uid;
-	var src = base + "/khan-exercises/indirect/?" + "ity_ef_site=raw" + "&ity_ef_slug=" + id + "&ity_ef_origin=" + origin;
+	var src = base + "/khan-exercises/indirect/?" + "ity_ef_site=raw" + "&ity_ef_slug=" + id + "&ity_ef_origin=" + origin + currentStreak + longestStreak;
 	var body =
 		"<a name='" + uid + "-ancor'></a>" + 
 		"<div id='" + uid + "-loading'><img src='" + base + "/khan-exercises/css/images/throbber.gif' /></div>" +
-		"<iframe src='" + src + "' style='" + style + "' frameborder='0' scrolling='no' id='" + uid + "' onLoad='ity_ef_resize_height(\"" + uid + "\");'></iframe>";
+		"<iframe src='" + src + "' style='" + style + "' frameborder='0' scrolling='no' id='" + uid + "' onLoad='ity_ef_resize_height(\"" + uid + "\");ity_load_globals(\"" + uid + "\",\"" + name + "\")'></iframe>";
 
 	// render it out
 	document.write(body);
